@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 
 from blog.models import Category, Post
+from django.views.generic import ListView, DetailView
+from django.views.generic.list import MultipleObjectMixin
 
 MAX_POSTS_LIMIT = 5
 
@@ -42,35 +44,38 @@ def get_post_list(category: Optional[Category] = None) -> 'QuerySet[Post]':
     return query
 
 
-def index(request: HttpRequest) -> HttpResponse:
-    """Handles requests for the home page."""
-    template: str = 'blog/index.html'
-    post_list = get_post_list()[:MAX_POSTS_LIMIT]
-    context: dict = {'post_list': post_list}
-    return render(request, template, context)
+class PostListView(ListView):
+    template_name = 'blog/index.html'
+    context_object_name = 'post_list'
+    paginate_by = 10
+
+    def get_queryset(self) -> QuerySet[Post]:
+        return get_post_list()
 
 
-def post_detail(request: HttpRequest, post_id: int) -> HttpResponse:
-    """Handles requests for displaying a specific post detail."""
-    post = get_object_or_404(get_post_list(), id=post_id)
-    context: dict = {'post': post}
-    template: str = 'blog/detail.html'
-    return render(request, template, context)
+class PostDetailView(DetailView):
+    template_name = 'blog/detail.html'
+    context_object_name = 'post'
+    pk_url_kwarg = 'post_id'
+    queryset = get_post_list()
 
 
-def category_posts(request: HttpRequest, category_slug: str) -> HttpResponse:
-    """
-    Handles requests for displaying posts
-    belonging to a specific category.
-    """
-    category = get_object_or_404(
-        Category.objects.only('id', 'description', 'title', 'slug'),
-        slug=category_slug,
-        is_published=True
-    )
+class CategoryDetailView(DetailView, MultipleObjectMixin):
+    template_name = 'blog/category.html'
+    slug_url_kwarg = 'category_slug'
+    queryset = Category.objects.only('id', 'description', 'title', 'slug')
+    paginate_by = 10
 
-    post_list = get_post_list(category)
+    def get_context_data(self, **kwargs):
+        category = self.get_object()
+        post_list = get_post_list(category=category)
+        context = super(CategoryDetailView, self).get_context_data(object_list=post_list, **kwargs)
+        return context
 
-    context: dict = {'category': category, 'post_list': post_list}
-    template: str = 'blog/category.html'
-    return render(request, template, context)
+
+def create_post(request):
+    return None
+
+
+def profile(request, username):
+    return None
