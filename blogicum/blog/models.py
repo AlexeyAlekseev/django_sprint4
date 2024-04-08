@@ -59,6 +59,11 @@ class Post(CreationPublishedModel):
         null=True,
         related_name='posts'
     )
+    image = models.ImageField(
+        'Изображение',
+        upload_to='post_images',
+        blank=True
+    )
 
     class Meta(CreationPublishedModel.Meta):
         """A meta class that configures additional parameters of the model."""
@@ -109,3 +114,22 @@ class Location(CreationPublishedModel):
 
     def __str__(self):
         return truncatechars(self.name, TRUNCATION_LENGTH)
+
+
+class Comment(models.Model):
+    text = models.TextField('Комментарий')
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'Комментарии'
+        ordering = ['created_at']
+
+    def __str__(self):
+        return truncatechars(self.text, TRUNCATION_LENGTH)
