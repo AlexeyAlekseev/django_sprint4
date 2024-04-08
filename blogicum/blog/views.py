@@ -1,5 +1,7 @@
 from typing import Optional
 
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import QuerySet, Count
 from django.http import Http404
@@ -156,6 +158,7 @@ class UserProfileDetailView(DetailView, MultipleObjectMixin):
             object_list=post_list, **kwargs
         )
         context['profile'] = author
+        context['user'] = self.request.user
         return context
 
 
@@ -175,6 +178,17 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def test_func(self):
         return self.get_object().username == self.request.user
+
+
+class UserRegistrationView(CreateView):
+    template_name = 'registration/registration_form.html'
+    form_class = UserCreationForm
+    success_url = reverse_lazy('blog:index')
+
+    def form_valid(self, form):
+        valid = super().form_valid(form)
+        login(self.request, self.object)
+        return valid
 
 
 """------------------POST CREATE/UPDATE/DELETE ---------------------------"""
