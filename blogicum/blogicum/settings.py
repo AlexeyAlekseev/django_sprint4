@@ -141,4 +141,4 @@ INTERNAL_IPS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'blogicum:index'
+LOGIN_REDIRECT_URL = 'blog:index'
