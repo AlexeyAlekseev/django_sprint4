@@ -1,14 +1,14 @@
 from typing import Optional
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.mail import send_mail
 from django.db.models import QuerySet, Count
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, \
-    DeleteView
+from django.views.generic import (
+    ListView, DetailView, CreateView, UpdateView, DeleteView
+)
 from django.views.generic.list import MultipleObjectMixin
 
 from blog.forms import PostForm, CommentsForm
@@ -102,8 +102,11 @@ class PostDetailView(DetailView):
 
     def get_object(self, queryset=None):
         post = super().get_object(queryset)
-        if (
-                post.is_published and post.category.is_published and post.pub_date <= timezone.now()) or self.request.user == post.author:
+        if ((
+                post.is_published
+                and post.category.is_published
+                and post.pub_date <= timezone.now())
+                or self.request.user == post.author):
             return post
         else:
             raise Http404("Post does not exist or is not published")
@@ -269,13 +272,6 @@ class CommentUpdateView(LoginRequiredMixin, IsAuthorMixin, UpdateView):
 
     def form_valid(self, form):
         form.save()
-        send_mail(
-            subject='New comment',
-            message=f'опубликован новый коммент!',
-            from_email='noreplay@acme.not',
-            recipient_list=['root@acme.not'],
-            fail_silently=True,
-        )
         return super().form_valid(form)
 
     def get_success_url(self):
