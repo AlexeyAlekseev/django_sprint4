@@ -5,15 +5,17 @@ The models included are:
 - `Post`: This model represents individual blog posts.
 - `Category`: This model provides categorization for blog posts.
 - `Location`: This model stores location data associated with blog posts.
+- 'Comment': This model stores comment data associated with blog posts
+and author.
 """
 
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.template.defaultfilters import truncatechars
 
-User = get_user_model()
+from blog.constants import Config
 
-TRUNCATION_LENGTH = 30
+User = get_user_model()
 
 
 class CreationPublishedModel(models.Model):
@@ -65,15 +67,15 @@ class Post(CreationPublishedModel):
         blank=True
     )
 
-    class Meta(CreationPublishedModel.Meta):
+    class Meta:
         """A meta class that configures additional parameters of the model."""
 
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
-        ordering = ('-pub_date',)
+        ordering = (Config.ORDER_BY_DATE_DESC,)
 
     def __str__(self):
-        return truncatechars(self.title, TRUNCATION_LENGTH)
+        return truncatechars(self.title, Config.TRUNCATION_LENGTH)
 
 
 class Category(CreationPublishedModel):
@@ -88,14 +90,14 @@ class Category(CreationPublishedModel):
                   'разрешены символы латиницы, цифры, дефис и подчёркивание.'
     )
 
-    class Meta(CreationPublishedModel.Meta):
+    class Meta:
         """A meta class that configures additional parameters of the model."""
 
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return truncatechars(self.title, TRUNCATION_LENGTH)
+        return truncatechars(self.title, Config.TRUNCATION_LENGTH)
 
 
 class Location(CreationPublishedModel):
@@ -106,21 +108,22 @@ class Location(CreationPublishedModel):
 
     name = models.CharField('Название места', max_length=256)
 
-    class Meta(CreationPublishedModel.Meta):
+    class Meta:
         """A meta class that configures additional parameters of the model."""
 
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
 
     def __str__(self):
-        return truncatechars(self.name, TRUNCATION_LENGTH)
+        return truncatechars(self.name, Config.TRUNCATION_LENGTH)
 
 
 class Comment(models.Model):
     """
     The Comment model stores information about comments on a post.
-    That can be associated with a Post and Author
+    That can be associated with a Post and Author.
     """
+
     text = models.TextField('Комментарий')
     post = models.ForeignKey(
         Post,
@@ -132,9 +135,10 @@ class Comment(models.Model):
 
     class Meta:
         """A meta class that configures additional parameters of the model."""
+
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ['created_at']
+        ordering = ('created_at',)
 
     def __str__(self):
-        return truncatechars(self.text, TRUNCATION_LENGTH)
+        return truncatechars(self.text, Config.TRUNCATION_LENGTH)

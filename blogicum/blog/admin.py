@@ -2,9 +2,10 @@
 `Blog/admin.py` module.
 This module configures the administrative interface of the 'blog' app.
 """
+
 from django.contrib import admin
 
-from .models import Category, Location, Post
+from .models import Category, Location, Post, Comment
 
 admin.site.empty_value_display = 'Не задано'
 
@@ -39,7 +40,7 @@ class PostAdmin(admin.ModelAdmin):
         'is_published',
         'category'
     )
-    search_fields = ['title']
+    search_fields = ('title',)
     list_filter = ('category', 'location')
     list_display_links = ('title',)
 
@@ -54,10 +55,11 @@ class LocationAdmin(admin.ModelAdmin):
     list_editable = (
         'is_published',
     )
-    search_fields = ['name']
+    search_fields = ('name',)
     list_display_links = ('name',)
 
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Post, PostAdmin)
+admin.site.register(Comment)
