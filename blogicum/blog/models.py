@@ -117,6 +117,10 @@ class Location(CreationPublishedModel):
 
 
 class Comment(models.Model):
+    """
+    The Comment model stores information about comments on a post.
+    That can be associated with a Post and Author
+    """
     text = models.TextField('Комментарий')
     post = models.ForeignKey(
         Post,
@@ -127,6 +131,7 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        """A meta class that configures additional parameters of the model."""
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
         ordering = ['created_at']
