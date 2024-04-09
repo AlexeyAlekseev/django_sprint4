@@ -2,6 +2,7 @@
 `Blog/admin.py` module.
 This module configures the administrative interface of the 'blog' app.
 """
+
 from django.contrib import admin
 
 from .models import Category, Location, Post
