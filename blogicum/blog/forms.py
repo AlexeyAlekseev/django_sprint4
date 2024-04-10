@@ -22,6 +22,9 @@ class PostForm(forms.ModelForm):
         }
 
 
+LOANWORDS = {'гитлер', 'наркотики'}
+
+
 class CommentsForm(forms.ModelForm):
     """The Form for creating a Comment instance."""
 

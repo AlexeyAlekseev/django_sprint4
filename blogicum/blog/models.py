@@ -13,6 +13,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.template.defaultfilters import truncatechars
 
+from .validators import forbidden_words
 from blog.constants import Config
 
 User = get_user_model()
@@ -36,7 +37,7 @@ class Post(CreationPublishedModel):
     """Post model represents a single post in the blog."""
 
     title = models.CharField('Заголовок', max_length=256)
-    text = models.TextField('Текст')
+    text = models.TextField('Текст', validators=(forbidden_words,))
     pub_date = models.DateTimeField(
         verbose_name='Дата и время публикации',
         help_text='Если установить дату и время в будущем — можно'
@@ -124,7 +125,7 @@ class Comment(models.Model):
     That can be associated with a Post and Author.
     """
 
-    text = models.TextField('Комментарий')
+    text = models.TextField('Комментарий', validators=(forbidden_words,))
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,

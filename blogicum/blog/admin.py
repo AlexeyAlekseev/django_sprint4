@@ -6,6 +6,7 @@ This module configures the administrative interface of the 'blog' app.
 from django.contrib import admin
 
 from .models import Category, Location, Post, Comment
+from .validators import ForbiddenWord
 
 admin.site.empty_value_display = 'Не задано'
 
@@ -63,3 +64,4 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment)
+admin.site.register(ForbiddenWord)

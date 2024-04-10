@@ -206,6 +206,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     form_class = CommentsForm
     pk_url_kwarg = 'post_id'
+    template_name = 'blog/comment.html'
 
     def form_valid(self, form):
         """Validate form."""
