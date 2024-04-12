@@ -33,7 +33,12 @@ def forbidden_words(value: str) -> None:
     )
     restricted_words = tuple(
         item for item in forbidden
-        if difflib.get_close_matches(item, words, n=1, cutoff=0.6)
+        if difflib.get_close_matches(
+            item,
+            words,
+            n=Config.CLOSE_MATCH_NUM,
+            cutoff=Config.CUTOFF_POSSIBLE_SCORE
+        )
     )
     if restricted_words:
         raise ValidationError(

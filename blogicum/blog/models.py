@@ -13,8 +13,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.template.defaultfilters import truncatechars
 
-from .validators import forbidden_words
 from blog.constants import Config
+from .validators import forbidden_words
 
 User = get_user_model()
 
@@ -128,6 +128,7 @@ class Comment(models.Model):
     text = models.TextField('Комментарий', validators=(forbidden_words,))
     post = models.ForeignKey(
         Post,
+        verbose_name='Публикация',
         on_delete=models.CASCADE,
         related_name='comments',
     )

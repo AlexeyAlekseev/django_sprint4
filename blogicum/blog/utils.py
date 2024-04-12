@@ -3,11 +3,12 @@ import typing
 
 from django.db.models import Count
 from django.utils import timezone
-from blog.models import Post
+
 from blog.constants import Config
+from blog.models import Post
 
 if typing.TYPE_CHECKING:
-    from django.db.models import QuerySet  # noqa
+    from django.db.models import QuerySet  # noqa TC002
 
 
 def get_posts(published=None, category=None,
